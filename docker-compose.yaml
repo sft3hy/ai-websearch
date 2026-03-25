@@ -1,0 +1,27 @@
+services:
+  backend:
+    build: ./api
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+    ports:
+      - "8000:8000"
+    restart: always
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    tty: true
+    ports:
+      - "3000:8080"
+    environment:
+      - OPENAI_API_BASE_URL=http://backend:8000/v1
+      - OPENAI_API_KEY=unused
+      - WEBUI_SECRET_KEY=t0p-s3cr3t
+    volumes:
+      - open-webui:/app/backend/data
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  open-webui:

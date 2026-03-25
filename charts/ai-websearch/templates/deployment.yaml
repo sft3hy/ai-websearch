@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ai-websearch.fullname" . }}
+  labels:
+    {{- include "ai-websearch.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ai-websearch.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ai-websearch.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: open-webui
+          image: "ghcr.io/open-webui/open-webui:main"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: OPENAI_API_BASE_URL
+              value: "http://localhost:8000/v1"
+            - name: OPENAI_API_KEY
+              value: "unused"
+            - name: WEBUI_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ai-websearch.fullname" . }}-secrets
+                  key: webui-secret-key
+          volumeMounts:
+            - name: data
+              mountPath: /app/backend/data
+          resources:
+            {{- toYaml .Values.resources.webui | nindent 12 }}
+        - name: agent-backend
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: api
+              containerPort: 8000
+              protocol: TCP
+          env:
+            - name: GROQ_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ai-websearch.fullname" . }}-secrets
+                  key: groq-api-key
+            - name: TAVILY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ai-websearch.fullname" . }}-secrets
+                  key: tavily-api-key
+          resources:
+            {{- toYaml .Values.resources.backend | nindent 12 }}
+      volumes:
+        - name: data
+          emptyDir: {}
