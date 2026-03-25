@@ -34,8 +34,8 @@ spec:
             - name: WEBUI_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "ai-websearch.fullname" . }}-secrets
-                  key: webui-secret-key
+                  name: {{ .Values.existingSecret | default (printf "%s-secrets" (include "ai-websearch.fullname" .)) }}
+                  key: WEBUI_SECRET_KEY
           volumeMounts:
             - name: data
               mountPath: /app/backend/data
@@ -52,13 +52,13 @@ spec:
             - name: GROQ_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "ai-websearch.fullname" . }}-secrets
-                  key: groq-api-key
+                  name: {{ .Values.existingSecret | default (printf "%s-secrets" (include "ai-websearch.fullname" .)) }}
+                  key: GROQ_API_KEY
             - name: TAVILY_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "ai-websearch.fullname" . }}-secrets
-                  key: tavily-api-key
+                  name: {{ .Values.existingSecret | default (printf "%s-secrets" (include "ai-websearch.fullname" .)) }}
+                  key: TAVILY_API_KEY
           resources:
             {{- toYaml .Values.resources.backend | nindent 12 }}
       volumes:

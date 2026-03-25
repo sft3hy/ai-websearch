@@ -41,14 +41,18 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
   hosts:
-    - host: ai-websearch.example.com
+    - host: test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com
       paths:
-        - path: /
+        - path: /ai-websearch
           pathType: Prefix
           backendPort: 8080
   tls: []
 
+# Name of an existing secret to use instead of creating one.
+# It should contain groq-api-key, tavily-api-key, and webui-secret-key.
+existingSecret: "ai-websearch-secrets"
+
 secrets:
-  groqApiKey: "YOUR_GROQ_API_KEY"
-  tavilyApiKey: "YOUR_TAVILY_API_KEY"
-  webuiSecretKey: "t0p-s3cr3t-k3y"
+  groqApiKey: ""
+  tavilyApiKey: ""
+  webuiSecretKey: ""
