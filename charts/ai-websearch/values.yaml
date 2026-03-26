@@ -48,8 +48,8 @@ ingress:
   hosts:
     - host: test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com
       paths:
-        - path: /ai-websearch
-          pathType: Prefix
+        - path: /ai-websearch(/|$)(.*)
+          pathType: ImplementationSpecific
           backendPort: 8080
   tls: []
 
