@@ -17,9 +17,16 @@ serviceAccount:
 
 service:
   type: ClusterIP
-  portWeb: 8080
+  portWeb: 80
 
 resources:
+  proxy:
+    requests:
+      cpu: "100m"
+      memory: "64Mi"
+    limits:
+      cpu: "200m"
+      memory: "128Mi"
   webui:
     requests:
       cpu: "1"
@@ -34,13 +41,6 @@ resources:
     limits:
       cpu: "1"
       memory: "1Gi"
-  patcher:
-    requests:
-      cpu: "500m"
-      memory: "256Mi"
-    limits:
-      cpu: "1"
-      memory: "512Mi"
 
 ingress:
   enabled: true
@@ -48,18 +48,13 @@ ingress:
   annotations:
     argocd.argoproj.io/tracking-id: ai-websearch:networking.k8s.io/Ingress:cosmichorizon/ai-websearch
     cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      rewrite ^(/ai-websearch)$ $1/ permanent;
-    nginx.ingress.kubernetes.io/proxy-redirect-from: default
-    nginx.ingress.kubernetes.io/proxy-redirect-to: /ai-websearch/
     external-dns.alpha.kubernetes.io/target: test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com
   hosts:
     - host: test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com
       paths:
-        - path: /ai-websearch(/|$)(.*)
-          pathType: ImplementationSpecific
-          backendPort: 8080
+        - path: /ai-websearch
+          pathType: Prefix
+          backendPort: 80
   tls: []
   webuiUrl: "https://test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com/ai-websearch/"
 
