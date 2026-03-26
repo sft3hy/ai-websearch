@@ -32,6 +32,12 @@ spec:
               find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/assets/|'/ai-websearch/assets/|g" {} +
               find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"/_app/|"/ai-websearch/_app/|g' {} +
               find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/_app/|'/ai-websearch/_app/|g" {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"/api/|"/ai-websearch/api/|g' {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/api/|'/ai-websearch/api/|g" {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"/auth/|"/ai-websearch/auth/|g' {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/auth/|'/ai-websearch/auth/|g" {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"/ws/|"/ai-websearch/ws/|g' {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/ws/|'/ai-websearch/ws/|g" {} +
               echo "Verifying patch..."
               grep -r "/ai-websearch/" /tmp/patched | head -n 5
               echo "Done."

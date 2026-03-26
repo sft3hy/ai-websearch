@@ -59,7 +59,7 @@ ingress:
           pathType: ImplementationSpecific
           backendPort: 8080
   tls: []
-  webuiUrl: "https://test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com/ai-websearch"
+  webuiUrl: "https://test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com/ai-websearch/"
 
 # Name of an existing secret to use instead of creating one.
 # It should contain groq-api-key, tavily-api-key, and webui-secret-key.
