@@ -27,9 +27,13 @@ spec:
             - |
               echo "Copying to /tmp/patched..."
               cp -rn /app/build/* /tmp/patched/
-              echo "Patching absolute paths..."
+              echo "Patching absolute paths in /tmp/patched..."
               find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"/assets/|"/ai-websearch/assets/|g' {} +
               find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/assets/|'/ai-websearch/assets/|g" {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"/_app/|"/ai-websearch/_app/|g' {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/_app/|'/ai-websearch/_app/|g" {} +
+              echo "Verifying patch..."
+              grep -r "/ai-websearch/" /tmp/patched | head -n 5
               echo "Done."
           volumeMounts:
             - name: patched-assets
@@ -56,8 +60,6 @@ spec:
                   key: WEBUI_SECRET_KEY
             - name: WEBUI_URL
               value: {{ .Values.ingress.webuiUrl | quote }}
-            - name: ROOT_PATH
-              value: "/ai-websearch"
             - name: ENABLE_PERSISTENT_CONFIG
               value: "False"
           volumeMounts:
