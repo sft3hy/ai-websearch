@@ -36,6 +36,8 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.existingSecret | default (printf "%s-secrets" (include "ai-websearch.fullname" .)) }}
                   key: WEBUI_SECRET_KEY
+            - name: WEBUI_URL
+              value: {{ .Values.ingress.webuiUrl | quote }}
           volumeMounts:
             - name: data
               mountPath: /app/backend/data
