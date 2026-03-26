@@ -27,19 +27,11 @@ spec:
             - |
               echo "Copying to /tmp/patched..."
               cp -rn /app/build/* /tmp/patched/
-              echo "Patching absolute paths in /tmp/patched..."
-              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"/assets/|"/ai-websearch/assets/|g' {} +
-              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/assets/|'/ai-websearch/assets/|g" {} +
-              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"/_app/|"/ai-websearch/_app/|g' {} +
-              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/_app/|'/ai-websearch/_app/|g" {} +
-              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"/api/|"/ai-websearch/api/|g' {} +
-              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/api/|'/ai-websearch/api/|g" {} +
-              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"/auth/|"/ai-websearch/auth/|g' {} +
-              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/auth/|'/ai-websearch/auth/|g" {} +
-              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"/ws/|"/ai-websearch/ws/|g' {} +
-              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/ws/|'/ai-websearch/ws/|g" {} +
+              echo "Patching all root-absolute paths in /tmp/patched..."
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"\/\([^/]\)|"/ai-websearch/\1|g' {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'\/\([^/]\)|'/ai-websearch/\1|g" {} +
               echo "Verifying patch..."
-              grep -r "/ai-websearch/" /tmp/patched | head -n 5
+              grep -r '"/ai-websearch/' /tmp/patched | head -n 5
               echo "Done."
           volumeMounts:
             - name: patched-assets
