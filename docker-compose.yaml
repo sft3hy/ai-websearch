@@ -1,6 +1,7 @@
 services:
   backend:
     build: ./api
+    image: harbor.i2cv.io/cosmic/ai-websearch-backend:latest
     environment:
       - GROQ_API_KEY=${GROQ_API_KEY}
       - TAVILY_API_KEY=${TAVILY_API_KEY}

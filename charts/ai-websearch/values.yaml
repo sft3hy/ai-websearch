@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: harbor.i2cv.io/cosmichorizon/ai-websearch-backend
+  repository: harbor.i2cv.io/cosmichorizon/ai-websearch-backend:latest
   pullPolicy: Always
   tag: "latest"
 
@@ -37,9 +37,14 @@ resources:
 
 ingress:
   enabled: true
-  className: ""
+  className: "cosmichorizon-nginx"
   annotations:
-    kubernetes.io/ingress.class: nginx
+    argocd.argoproj.io/tracking-id: ai-websearch:networking.k8s.io/Ingress:cosmichorizon/ai-websearch
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^(/ai-websearch)$ $1/ permanent;
+    external-dns.alpha.kubernetes.io/target: test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com
   hosts:
     - host: test-cosmichorizon-worker-68a3110f01feebd0.elb.us-gov-west-1.amazonaws.com
       paths:
