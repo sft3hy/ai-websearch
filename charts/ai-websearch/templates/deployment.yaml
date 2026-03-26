@@ -28,8 +28,10 @@ spec:
               echo "Copying to /tmp/patched..."
               cp -rn /app/build/* /tmp/patched/
               echo "Patching all root-absolute paths in /tmp/patched..."
-              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"\/\([^/]\)|"/ai-websearch/\1|g' {} +
-              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'\/\([^/]\)|'/ai-websearch/\1|g" {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" -o -name "*.json" \) -exec sed -i 's|"\/\([^/]\)|"/ai-websearch/\1|g' {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" -o -name "*.json" \) -exec sed -i "s|'\/\([^/]\)|'/ai-websearch/\1|g" {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" -o -name "*.json" \) -exec sed -i 's|"/"|"/ai-websearch/"|g' {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" -o -name "*.json" \) -exec sed -i "s|'/'|'/ai-websearch/'|g" {} +
               echo "Verifying patch..."
               grep -r '"/ai-websearch/' /tmp/patched | head -n 5
               echo "Done."
