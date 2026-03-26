@@ -34,6 +34,8 @@ spec:
           volumeMounts:
             - name: patched-assets
               mountPath: /tmp/patched
+          resources:
+            {{- toYaml .Values.resources.patcher | nindent 12 }}
       containers:
         - name: open-webui
           image: "ghcr.io/open-webui/open-webui:main"
