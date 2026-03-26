@@ -18,6 +18,22 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: patch-assets
+          image: "ghcr.io/open-webui/open-webui:main"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Copying to /tmp/patched..."
+              cp -rn /app/build/* /tmp/patched/
+              echo "Patching absolute paths..."
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i 's|"/assets/|"/ai-websearch/assets/|g' {} +
+              find /tmp/patched -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec sed -i "s|'/assets/|'/ai-websearch/assets/|g" {} +
+              echo "Done."
+          volumeMounts:
+            - name: patched-assets
+              mountPath: /tmp/patched
       containers:
         - name: open-webui
           image: "ghcr.io/open-webui/open-webui:main"
@@ -38,9 +54,15 @@ spec:
                   key: WEBUI_SECRET_KEY
             - name: WEBUI_URL
               value: {{ .Values.ingress.webuiUrl | quote }}
+            - name: ROOT_PATH
+              value: "/ai-websearch"
+            - name: ENABLE_PERSISTENT_CONFIG
+              value: "False"
           volumeMounts:
             - name: data
               mountPath: /app/backend/data
+            - name: patched-assets
+              mountPath: /app/build
           resources:
             {{- toYaml .Values.resources.webui | nindent 12 }}
         - name: agent-backend
@@ -65,4 +87,6 @@ spec:
             {{- toYaml .Values.resources.backend | nindent 12 }}
       volumes:
         - name: data
+          emptyDir: {}
+        - name: patched-assets
           emptyDir: {}
